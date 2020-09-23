@@ -7,20 +7,28 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 public class MecanumTele extends LinearOpMode {
-    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-    private DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
 
     @Override
     public void runOpMode() {
-        frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
-//        for (DcMotor motor : motors) {
-//            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//            motor.setDirection(DcMotor.Direction.FORWARD);
-//        }
+        DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
+
+        for (DcMotor motor : motors) {
+            telemetry.addData(motor.getDeviceName(), motor.getMotorType());
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setDirection(DcMotor.Direction.FORWARD);
+        }
+
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        telemetry.update();
 
         waitForStart();
         while (opModeIsActive()) {
@@ -37,12 +45,21 @@ public class MecanumTele extends LinearOpMode {
             double max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
             max = Math.max(Math.abs(frontRightPower), max);
             max = Math.max(Math.abs(backRightPower), max);
-            if (max > 0.1) {
+            if (max > 1) {
                 frontLeftPower /= max;
                 backLeftPower /= max;
                 frontRightPower /= max;
                 backRightPower /= max;
             }
+
+            // slow mode
+            double scalar = 0.5;
+            frontLeftPower *= scalar;
+            backLeftPower *= scalar;
+            frontRightPower *= scalar;
+            backRightPower *= scalar;
+
+
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
@@ -52,6 +69,11 @@ public class MecanumTele extends LinearOpMode {
             telemetry.addData("x", x);
             telemetry.addData("y", y);
             telemetry.addData("r", r);
+            telemetry.addData("max", max);
+            telemetry.addData("frontLeftPower", frontLeftPower);
+            telemetry.addData("backLeftPower", backLeftPower);
+            telemetry.addData("frontRightPower", frontRightPower);
+            telemetry.addData("backRightPower", backRightPower);
             telemetry.update();
 
         }

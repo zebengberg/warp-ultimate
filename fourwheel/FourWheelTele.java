@@ -6,27 +6,40 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 public class FourWheelTele extends LinearOpMode {
-    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
-    private DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
+
+    double maxSpeed = 0.9;
 
     @Override
     public void runOpMode() {
-        frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
+        DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
+
+        for (DcMotor motor : motors) {
+            telemetry.addData(motor.getDeviceName(), motor.getMotorType());
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setDirection(DcMotor.Direction.FORWARD);
+        }
+
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         waitForStart();
         while (opModeIsActive()) {
-            double x = gamepad1.left_stick_x * 1.5;
+            double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
-            double r = gamepad1.right_stick_x;
 
 
-            double frontLeftPower = y + x + r;
-            double backLeftPower = y - x + r;
-            double frontRightPower = y - x - r;
-            double backRightPower = y + x - r;
+
+            double frontLeftPower = y + x * 1.5;
+            double backLeftPower = y + x;
+            double frontRightPower = y - x * 1.5;
+            double backRightPower = y - x;
 
             double max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
             max = Math.max(Math.abs(frontRightPower), max);
@@ -37,6 +50,11 @@ public class FourWheelTele extends LinearOpMode {
                 frontRightPower /= max;
                 backRightPower /= max;
             }
+
+            frontLeftPower *= maxSpeed;
+            backLeftPower *= maxSpeed;
+            frontRightPower *= maxSpeed;
+            backRightPower *= maxSpeed;
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);

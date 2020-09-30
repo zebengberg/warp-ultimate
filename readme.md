@@ -19,10 +19,22 @@ This repo contains FTC code for the 2020-2021 Wasatch Academy Robotics Program.
    adb devices
    ```
 
+1. Download the prebuilt APK.
+
+   ```sh
+   curl https://github.com/FIRST-Tech-Challenge/FtcRobotController/releases/download/v6.0/FtcDriverStation-release.apk --output DriverStation.apk
+   ```
+
 1. Install teamcode onto the phone.
 
    ```sh
-   adb install PATH_TO_FTC_REPO/doc/apk/FtcDriverStation-release.apk
+   adb install DriverStation.apk
+   ```
+
+1. Clean up.
+
+   ```sh
+   rm DriverStation.apk
    ```
 
 ## Make symbolic link to teamcode directory
@@ -38,11 +50,13 @@ cd warp
 
 1. Connect over wifi to control hub direct wifi network.
 
-1. Connect via adb.
+1. Connect to control hub via adb.
 
    ```sh
    adb connect 192.168.43.1:5555
    ```
+
+   For the robot phone, replace IP address with `192.168.49.1`
 
 1. Check connection or disconnect.
 
@@ -50,6 +64,20 @@ cd warp
    adb devices
    adb disconnect
    ```
+
+## How to deal with a device that refuses adb connection.
+
+1. Connect device to computer with USB cable.
+
+1. Connect adb over usb, then over IP.
+
+   ```sh
+   adb usb
+   adb tcpip 5555
+   adb connect 192.168.49.1
+   ```
+
+   Replace 49 with 43 for the control hub.
 
 ## How to connect to internet and control with secondary USB wifi adapter on Mac
 

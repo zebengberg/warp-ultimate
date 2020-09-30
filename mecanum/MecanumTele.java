@@ -8,6 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp
 public class MecanumTele extends LinearOpMode {
 
+    double maxSpeed = 1.0;
+    boolean isPressingX = false;
+
     @Override
     public void runOpMode() {
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
@@ -52,12 +55,20 @@ public class MecanumTele extends LinearOpMode {
                 backRightPower /= max;
             }
 
-            // slow mode
-            double scalar = 0.5;
-            frontLeftPower *= scalar;
-            backLeftPower *= scalar;
-            frontRightPower *= scalar;
-            backRightPower *= scalar;
+            // slow mode; gamepad1.x was just released
+            if (!gamepad1.x && isPressingX) {
+                if (maxSpeed == 1.0) {
+                    maxSpeed = 0.5;
+                } else {
+                    maxSpeed = 1.0;
+                }
+            }
+            isPressingX = gamepad1.x;
+
+            frontLeftPower *= maxSpeed;
+            backLeftPower *= maxSpeed;
+            frontRightPower *= maxSpeed;
+            backRightPower *= maxSpeed;
 
 
 
@@ -70,6 +81,7 @@ public class MecanumTele extends LinearOpMode {
             telemetry.addData("y", y);
             telemetry.addData("r", r);
             telemetry.addData("max", max);
+            telemetry.addData("isPressingX", isPressingX);
             telemetry.addData("frontLeftPower", frontLeftPower);
             telemetry.addData("backLeftPower", backLeftPower);
             telemetry.addData("frontRightPower", frontRightPower);

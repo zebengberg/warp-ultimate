@@ -7,16 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp
 public class FourWheelTele extends LinearOpMode {
 
-    double maxSpeed = 0.9;
+    public DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    public DcMotor[] motors;
 
-    @Override
-    public void runOpMode() {
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-
-        DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
+    public FourWheelTele() {
+        frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
+        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
+        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
+        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+        motors = new DcMotor[] {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
 
         for (DcMotor motor : motors) {
             telemetry.addData(motor.getDeviceName(), motor.getMotorType());
@@ -28,13 +27,17 @@ public class FourWheelTele extends LinearOpMode {
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    @Override
+    public void runOpMode() {
+
+        telemetry.speak("welcome imposter");
 
         waitForStart();
         while (opModeIsActive()) {
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
-
-
 
             double frontLeftPower = y + x * 1.5;
             double backLeftPower = y + x;
@@ -51,6 +54,7 @@ public class FourWheelTele extends LinearOpMode {
                 backRightPower /= max;
             }
 
+            double maxSpeed = 0.6;
             frontLeftPower *= maxSpeed;
             backLeftPower *= maxSpeed;
             frontRightPower *= maxSpeed;

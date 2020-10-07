@@ -3,34 +3,40 @@ package org.firstinspires.ftc.teamcode.mecanum;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
 public class MecanumTele extends LinearOpMode {
 
-    double maxSpeed = 1.0;
-    boolean isPressingX = false;
+    // public allows access from derived class
+    public DcMotorEx frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    public DcMotorEx[] motors;
 
-    @Override
-    public void runOpMode() {
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-
-        DcMotor[] motors = {frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor};
-
-        for (DcMotor motor : motors) {
-            telemetry.addData(motor.getDeviceName(), motor.getMotorType());
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setDirection(DcMotor.Direction.FORWARD);
-        }
+    public MecanumTele() {
+        frontLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontLeftMotor");
+        frontRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontRightMotor");
+        backLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("backLeftMotor");
+        backRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("backRightMotor");
+        motors = new DcMotorEx[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor};
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        telemetry.update();
+        for (DcMotor motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+    }
+
+
+
+    @Override
+    public void runOpMode() {
+        double maxSpeed = 1.0;
+        boolean isPressingX = false;
+
 
         waitForStart();
         while (opModeIsActive()) {

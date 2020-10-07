@@ -4,39 +4,54 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+
 @Autonomous
-public class EricPractice extends LinearOpMode {
-    private DcMotor frontLeftMotor;
-    private DcMotor frontRightMotor;
-    private DcMotor backLeftMotor;
-    private DcMotor backRightMotor;
-    private DcMotor[] motors;
+public class AutoTest extends LinearOpMode {
+    private DcMotorEx frontLeftMotor;
+    private DcMotorEx frontRightMotor;
+    private DcMotorEx backLeftMotor;
+    private DcMotorEx backRightMotor;
+    private DcMotorEx[] motors;
     private BNO055IMU imu;
+
 
 
     @Override
     public void runOpMode() {
         // DC motors for holonomic drive.
-        frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-        motors = new DcMotor[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor};
+        frontLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontLeftMotor");
+        frontRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontRightMotor");
+        backLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("backLeftMotor");
+        backRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("backRightMotor");
+        motors = new DcMotorEx[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor};
+
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
+        PIDFCoefficients pidOld = frontLeftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        PIDFCoefficients pidfNew = new PIDFCoefficients(1.0, 0.2, 0.2, 1.0);
 
+        for (DcMotorEx motor : motors) {
+            motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfNew);
+        }
+        
 
         // IMU DEVICE
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -57,46 +72,33 @@ public class EricPractice extends LinearOpMode {
         telemetry.update();
 
 
-        telemetry.speak("roger roger ROGER");
-
-        telemetry.speak("bri bri brian");
+        telemetry.speak("brian");
 
 
         waitForStart();
         goForward();
-//        if (opModeIsActive()) {
-//            goForward();
-//        }
-
-
-
-        //spin();
-        //goBackward();
-
-
-
 
     }
 
     public void goForward() {
 
-        telemetry.speak("go forward");
-        telemetry.addData("moving", "forward");
-        telemetry.update();
-
-
-
         for (DcMotor motor : motors) {
-            motor.setTargetPosition(10000);
+            motor.setTargetPosition(5000);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(0.25);
         }
 
         while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && backLeftMotor.isBusy() && backRightMotor.isBusy()) {
-            telemetry.speak("going forward");
-
+            printStatus();
         }
+    }
 
-
+    public void printStatus() {
+        for (DcMotor motor : motors) {
+            telemetry.addData(motor.getDeviceName(), motor.getCurrentPosition());
+            telemetry.addData(motor.getDeviceName(), motor.getTargetPosition());
+        }
+        telemetry.update();
     }
 
     public void goBackward() {

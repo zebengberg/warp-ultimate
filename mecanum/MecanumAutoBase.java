@@ -15,30 +15,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous
 public class MecanumAutoBase extends LinearOpMode {
+    MecanumRobot robot = new MecanumRobot();
 
     public BNO055IMU imu;
     public PIDFCoefficients pidf1, pidf2;
 
     public MecanumAutoBase() {
-        super.init();
+        robot.init(hardwareMap);
 
-        // imu initialization
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.loggingEnabled = false;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        telemetry.addData("Status", "Calibrating gyro...");
-        telemetry.update();
-
-        while (!opModeIsActive() && !imu.isGyroCalibrated()) { idle(); }
-        telemetry.addData("Status", imu.getCalibrationStatus().toString());
-        telemetry.addData("Status", "Initialized!");
-        telemetry.update();
 
         // PIDF coefficients
-        pidf1 = frontLeftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        pidf1 = robot.frontLeftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         pidf2 = new PIDFCoefficients(1.0, 0.2, 0.2, 1.0);
     }
 
@@ -55,44 +42,40 @@ public class MecanumAutoBase extends LinearOpMode {
     }
 
     public void goForward(int position) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : robot.motors) {
             motor.setTargetPosition(position);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(0.25);
         }
 
-        for (DcMotorEx motor : motors) {
+        for (DcMotorEx motor : robot.motors) {
             motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf1);
         }
 
-        while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && backLeftMotor.isBusy() && backRightMotor.isBusy()) {
-            printStatus();
+        while (robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy() &&
+                robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy()) {
+            robot.printStatus(telemetry);
         }
     }
 
     public void goBackward(int position) {
-        for (DcMotor motor : motors) {
+        for (DcMotor motor : robot.motors) {
             motor.setTargetPosition(-position);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(0.25);
         }
 
-        for (DcMotorEx motor : motors) {
+        for (DcMotorEx motor : robot.motors) {
             motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf2);
         }
 
-        while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && backLeftMotor.isBusy() && backRightMotor.isBusy()) {
-            printStatus();
+        while (robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy() &&
+                robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy()) {
+            robot.printStatus(telemetry);
         }
     }
 
-    public void printStatus() {
-        for (DcMotor motor : motors) {
-            telemetry.addData(motor.getDeviceName(), motor.getCurrentPosition());
-            telemetry.addData(motor.getDeviceName(), motor.getTargetPosition());
-        }
-        telemetry.update();
-    }
+
 
     public void spin(int targetAngle) {
         double error;
@@ -102,10 +85,10 @@ public class MecanumAutoBase extends LinearOpMode {
             double currentAngle = angles.firstAngle;
             error = currentAngle - targetAngle;
 
-            frontLeftMotor.setPower(-error);
-            backLeftMotor.setPower(-error);
-            frontRightMotor.setPower(error);
-            backRightMotor.setPower(error);
+            robot.frontLeftMotor.setPower(-error);
+            robot.backLeftMotor.setPower(-error);
+            robot.frontRightMotor.setPower(error);
+            robot.backRightMotor.setPower(error);
 
 
 

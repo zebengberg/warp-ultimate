@@ -2,38 +2,16 @@ package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp
+
+@TeleOp(name="MecanumTele", group="Mecanum")
 public class MecanumTele extends LinearOpMode {
-
-    // public allows access from derived class
-    public DcMotorEx frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-    public DcMotorEx[] motors;
-
-    public MecanumTele() {
-        frontLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontLeftMotor");
-        frontRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("frontRightMotor");
-        backLeftMotor = (DcMotorEx)hardwareMap.dcMotor.get("backLeftMotor");
-        backRightMotor = (DcMotorEx)hardwareMap.dcMotor.get("backRightMotor");
-        motors = new DcMotorEx[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor};
-
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        for (DcMotor motor : motors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-    }
-
-
+    MecanumRobot robot = new MecanumRobot();
 
     @Override
     public void runOpMode() {
+        robot.init(hardwareMap);
+
         double maxSpeed = 1.0;
         boolean isPressingX = false;
 
@@ -45,8 +23,8 @@ public class MecanumTele extends LinearOpMode {
             double r = gamepad1.right_stick_x;
 
 
-            double frontLeftPower = y + x + r;
-            double backLeftPower = y - x + r;
+            double frontLeftPower = y - x + r;
+            double backLeftPower = y + x + r;
             double frontRightPower = y - x - r;
             double backRightPower = y + x - r;
 
@@ -77,22 +55,15 @@ public class MecanumTele extends LinearOpMode {
 
 
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            robot.frontLeftMotor.setPower(frontLeftPower);
+            robot.backLeftMotor.setPower(backLeftPower);
+            robot.frontRightMotor.setPower(frontRightPower);
+            robot.backRightMotor.setPower(backRightPower);
 
-            telemetry.addData("x", x);
-            telemetry.addData("y", y);
-            telemetry.addData("r", r);
-            telemetry.addData("max", max);
-            telemetry.addData("isPressingX", isPressingX);
-            telemetry.addData("frontLeftPower", frontLeftPower);
-            telemetry.addData("backLeftPower", backLeftPower);
-            telemetry.addData("frontRightPower", frontRightPower);
-            telemetry.addData("backRightPower", backRightPower);
-            telemetry.update();
+            robot.printStatus(telemetry);
+
 
         }
+
     }
 }

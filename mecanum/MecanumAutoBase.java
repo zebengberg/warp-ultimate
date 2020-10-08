@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 @Autonomous
-public class MecanumAutoBase extends MecanumTele {
+public class MecanumAutoBase extends LinearOpMode {
 
     public BNO055IMU imu;
     public PIDFCoefficients pidf1, pidf2;
@@ -93,21 +94,23 @@ public class MecanumAutoBase extends MecanumTele {
         telemetry.update();
     }
 
-    public void spin(int angle) {
-        double currentAngle;
+    public void spin(int targetAngle) {
+        double error;
         do {
 
-            double power = 0.25;
-            frontLeftMotor.setPower(-power);
-            backLeftMotor.setPower(-power);
-            frontRightMotor.setPower(power);
-            backRightMotor.setPower(power);
-
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            currentAngle = angles.firstAngle;
+            double currentAngle = angles.firstAngle;
+            error = currentAngle - targetAngle;
+
+            frontLeftMotor.setPower(-error);
+            backLeftMotor.setPower(-error);
+            frontRightMotor.setPower(error);
+            backRightMotor.setPower(error);
+
+
 
             telemetry.addData("angle", currentAngle);
             telemetry.update();
-        } while (currentAngle < angle);
+        } while (Math.abs(error) > 30);
     }
 }

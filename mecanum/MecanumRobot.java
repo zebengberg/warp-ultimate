@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,6 +12,7 @@ public class MecanumRobot {
     public DcMotorEx frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     public DcMotorEx[] motors;
     public BNO055IMU imu;
+    public ColorSensor leftColor, rightColor;
 
     HardwareMap hwMap;
     Telemetry tel;
@@ -19,6 +21,7 @@ public class MecanumRobot {
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;
 
+        // motor initialization
         frontLeftMotor = (DcMotorEx)hwMap.dcMotor.get("frontLeftMotor");
         frontRightMotor = (DcMotorEx)hwMap.dcMotor.get("frontRightMotor");
         backLeftMotor = (DcMotorEx)hwMap.dcMotor.get("backLeftMotor");
@@ -32,8 +35,7 @@ public class MecanumRobot {
 
         for (DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         // imu initialization
@@ -44,15 +46,21 @@ public class MecanumRobot {
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        // color sensor initialization
+        leftColor = hwMap.get(ColorSensor.class, "leftColor");
+        rightColor = hwMap.get(ColorSensor.class, "rightColor");
     }
 
     public void printStatus(Telemetry atel) {
         tel = atel;
-        for (DcMotor motor : motors) {
-            tel.addData(motor.getDeviceName(), motor.getCurrentPosition());
-            tel.addData(motor.getDeviceName(), motor.getTargetPosition());
-            tel.addData(motor.getDeviceName(), motor.getPower());
-        }
+        tel.addData("frontLeftMotor", frontLeftMotor.getPower());
+        tel.addData("frontRightMotor", frontRightMotor.getPower());
+        tel.addData("backLeftMotor", backLeftMotor.getPower());
+        tel.addData("backRightMotor", backRightMotor.getPower());
+        tel.addData("leftColor", leftColor.red() + " " + leftColor.green() +
+                " " + leftColor.blue());
+        tel.addData("rightColor", rightColor.red() + " " + rightColor.green() +
+                " " + rightColor.blue());
         tel.update();
     }
 }

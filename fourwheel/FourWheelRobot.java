@@ -1,0 +1,77 @@
+package org.firstinspires.ftc.teamcode.fourwheel;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+public class FourWheelRobot {
+
+    public DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    public DcMotor[] driveMotors;
+
+    public DcMotor leftShooter, rightShooter, loadingMotor;
+    public DcMotor[] shooterMotors;
+
+    public DcMotor[] motors;
+
+    HardwareMap hwMap;
+    Telemetry tel;
+
+
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
+
+        // drive motor initialization
+        frontLeftMotor = hwMap.dcMotor.get("frontLeftMotor");
+        frontRightMotor = hwMap.dcMotor.get("frontRightMotor");
+        backLeftMotor = hwMap.dcMotor.get("backLeftMotor");
+        backRightMotor = hwMap.dcMotor.get("backRightMotor");
+        driveMotors = new DcMotor[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor};
+
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // shooter motor initialization
+        leftShooter = hwMap.dcMotor.get("leftShooter");
+        rightShooter = hwMap.dcMotor.get("rightShooter");
+        loadingMotor = hwMap.dcMotor.get("loadingMotor");
+        shooterMotors = new DcMotor[] {leftShooter, rightShooter};
+
+        leftShooter.setDirection(DcMotor.Direction.FORWARD);
+        rightShooter.setDirection(DcMotor.Direction.REVERSE);
+        loadingMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        // all motor initialization
+        motors = new DcMotor[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor,
+                leftShooter, rightShooter, loadingMotor};
+        for (DcMotor motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
+    public void shoot(double speed) {
+        for (DcMotor motor : shooterMotors) {
+            motor.setPower(speed);
+        }
+    }
+
+    public void load(double speed) {
+        loadingMotor.setPower(speed);
+    }
+
+    public void printStatus(Telemetry atel) {
+        tel = atel;
+        tel.addData("frontLeftMotor", frontLeftMotor.getPower());
+        tel.addData("frontRightMotor", frontRightMotor.getPower());
+        tel.addData("backLeftMotor", backLeftMotor.getPower());
+        tel.addData("backRightMotor", backRightMotor.getPower());
+        tel.addData("leftShooter", leftShooter.getPower());
+        tel.addData("rightShooter", rightShooter.getPower());
+        tel.addData("loadingMotor", loadingMotor.getPower());
+        tel.update();
+    }
+}

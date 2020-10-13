@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.fourwheel;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,8 +18,9 @@ public class FourWheelRobot {
     Telemetry tel;
 
 
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap, Telemetry atel) {
         hwMap = ahwMap;
+        tel = atel;
 
         // drive motor initialization
         frontLeftMotor = hwMap.dcMotor.get("frontLeftMotor");
@@ -51,6 +51,9 @@ public class FourWheelRobot {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+
+        // saying its name
+        tel.speak("IMPOSTER IS NOW SELF_AWARE");
     }
 
     public void shoot(double speed) {
@@ -61,6 +64,13 @@ public class FourWheelRobot {
 
     public void load(double speed) {
         loadingMotor.setPower(speed);
+    }
+
+    public void goForward(int position) {
+        for (DcMotor motor : driveMotors) {
+            motor.setTargetPosition(position);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
     }
 
     public void printStatus(Telemetry atel) {

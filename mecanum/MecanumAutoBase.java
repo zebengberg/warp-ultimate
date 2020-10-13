@@ -20,18 +20,20 @@ public class MecanumAutoBase extends LinearOpMode {
     public BNO055IMU imu;
     public PIDFCoefficients pidf1, pidf2;
 
-    public MecanumAutoBase() {
-        robot.init(hardwareMap);
 
 
-        // PIDF coefficients
-        pidf1 = robot.frontLeftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        pidf2 = new PIDFCoefficients(1.0, 0.2, 0.2, 1.0);
-    }
+
 
 
     @Override
     public void runOpMode() {
+        robot.init(hardwareMap, telemetry);
+
+        // PIDF coefficients
+        pidf1 = robot.frontLeftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        pidf2 = new PIDFCoefficients(1.0, 0.2, 0.2, 1.0);
+
+
         waitForStart();
         goForward(2000);
         goBackward(2000);

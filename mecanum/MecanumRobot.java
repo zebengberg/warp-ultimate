@@ -18,8 +18,9 @@ public class MecanumRobot {
     Telemetry tel;
 
 
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap, Telemetry atel) {
         hwMap = ahwMap;
+        tel = atel;
 
         // motor initialization
         frontLeftMotor = (DcMotorEx)hwMap.dcMotor.get("frontLeftMotor");
@@ -49,6 +50,9 @@ public class MecanumRobot {
         // color sensor initialization
         leftColor = hwMap.get(ColorSensor.class, "leftColor");
         rightColor = hwMap.get(ColorSensor.class, "rightColor");
+
+        // saying its name
+        tel.speak("CREW MATE IS NOW SELF_AWARE");
     }
 
     public void printStatus(Telemetry atel) {

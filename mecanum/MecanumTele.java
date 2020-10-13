@@ -10,7 +10,7 @@ public class MecanumTele extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
 
         double maxSpeed = 1.0;
         boolean isPressingX = false;

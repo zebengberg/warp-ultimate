@@ -11,8 +11,8 @@ public class FourWheelTele extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
-        telemetry.speak("welcome imposter");
+        robot.init(hardwareMap, telemetry);
+
 
         double maxSpeed = 0.6;
 
@@ -40,7 +40,7 @@ public class FourWheelTele extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 robot.shoot(0.5);
             }
-            robot.load(gamepad1.left_trigger);
+            robot.load(-gamepad1.left_trigger);
 
             maxSpeed = 0.6;
             frontLeftPower *= maxSpeed;

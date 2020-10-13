@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.fourwheel;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-public class FourWheelAuto extends FourWheelTele {
+@Autonomous(name="FourWheel", group="FourWheel")
+public class FourWheelAuto extends LinearOpMode {
     FourWheelRobot robot = new FourWheelRobot();
 
     @Override

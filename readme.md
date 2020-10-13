@@ -1,4 +1,4 @@
-# WARP Skystone
+# WARP Ultimate
 
 This repo contains FTC code for the 2020-2021 Wasatch Academy Robotics Program.
 

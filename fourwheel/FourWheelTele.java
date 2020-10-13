@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="FourWheelTele", group="FourWheel")
+@TeleOp(name="FourWheel", group="FourWheel")
 public class FourWheelTele extends LinearOpMode {
     FourWheelRobot robot = new FourWheelRobot();
 

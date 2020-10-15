@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
-@Autonomous(name="Base", group="Mecanum")
+@Autonomous(name="MecanumAutoBase", group="Mecanum")
 public class MecanumAutoBase extends LinearOpMode {
     MecanumRobot robot = new MecanumRobot();
 

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="Mecanum", group="Mecanum")
+@TeleOp(name="MecanumTele", group="Mecanum")
 public class MecanumTele extends LinearOpMode {
     MecanumRobot robot = new MecanumRobot();
 

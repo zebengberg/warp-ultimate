@@ -12,8 +12,6 @@ public class FourWheelRobot {
     public DcMotor leftShooter, rightShooter, loadingMotor;
     public DcMotor[] shooterMotors;
 
-    public DcMotor[] motors;
-
     HardwareMap hwMap;
     Telemetry tel;
 
@@ -34,6 +32,11 @@ public class FourWheelRobot {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
+        for (DcMotor motor : driveMotors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
         // shooter motor initialization
         leftShooter = hwMap.dcMotor.get("leftShooter");
         rightShooter = hwMap.dcMotor.get("rightShooter");
@@ -44,13 +47,14 @@ public class FourWheelRobot {
         rightShooter.setDirection(DcMotor.Direction.REVERSE);
         loadingMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        // all motor initialization
-        motors = new DcMotor[] {frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor,
-                leftShooter, rightShooter, loadingMotor};
-        for (DcMotor motor : motors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        for (DcMotor motor : shooterMotors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+
+        // loading motor initialization
+        loadingMotor.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+
 
         // saying its name
         tel.speak("IMPOSTER IS NOW SELF_AWARE");

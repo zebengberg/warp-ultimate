@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class FourWheelTele extends LinearOpMode {
     FourWheelRobot robot = new FourWheelRobot();
 
+    private boolean isRightBumperPressed = false;
+    private boolean isLeftBumperPressed = false;
+    private double shooterSpeed = 0.0;
+
 
     @Override
     public void runOpMode() {
@@ -37,9 +41,7 @@ public class FourWheelTele extends LinearOpMode {
             }
 
             // shooting and loading
-            if (gamepad1.right_bumper) {
-                robot.shoot(0.5);
-            }
+            shoot();
             robot.load(-gamepad1.left_trigger);
 
             maxSpeed = 0.6;
@@ -56,4 +58,25 @@ public class FourWheelTele extends LinearOpMode {
             robot.printStatus(telemetry);
         }
     }
+
+    private void shoot() {
+        if (gamepad1.left_bumper && !isLeftBumperPressed) {
+            if (shooterSpeed == 0.0) {
+                shooterSpeed = 0.4;
+            } else {
+                shooterSpeed = 0.0;
+            }
+        }
+        else if (gamepad1.right_bumper && !isRightBumperPressed) {
+            if (shooterSpeed == 0.0) {
+                shooterSpeed = 0.5;
+            } else {
+                shooterSpeed = 0.0;
+            }
+        }
+        isLeftBumperPressed = gamepad1.left_bumper;
+        isRightBumperPressed = gamepad1.right_bumper;
+        robot.shoot(shooterSpeed);
+    }
+
 }

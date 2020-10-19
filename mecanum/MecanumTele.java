@@ -60,6 +60,11 @@ public class MecanumTele extends LinearOpMode {
             robot.frontRightMotor.setPower(frontRightPower);
             robot.backRightMotor.setPower(backRightPower);
 
+
+            robot.intake(gamepad1.right_trigger);
+
+
+
             robot.printStatus(telemetry);
 
 

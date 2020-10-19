@@ -62,14 +62,14 @@ public class FourWheelTele extends LinearOpMode {
     private void shoot() {
         if (gamepad1.left_bumper && !isLeftBumperPressed) {
             if (shooterSpeed == 0.0) {
-                shooterSpeed = 0.4;
+                shooterSpeed = 0.50;
             } else {
                 shooterSpeed = 0.0;
             }
         }
         else if (gamepad1.right_bumper && !isRightBumperPressed) {
             if (shooterSpeed == 0.0) {
-                shooterSpeed = 0.5;
+                shooterSpeed = 0.55;
             } else {
                 shooterSpeed = 0.0;
             }

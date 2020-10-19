@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.fourwheel;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -9,7 +10,7 @@ public class FourWheelRobot {
     public DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     public DcMotor[] driveMotors;
 
-    public DcMotor leftShooter, rightShooter, loadingMotor;
+    public DcMotor leftShooter, rightShooter, loadingMotor, intakeMotor;
     public DcMotor[] shooterMotors;
 
     HardwareMap hwMap;
@@ -41,19 +42,22 @@ public class FourWheelRobot {
         leftShooter = hwMap.dcMotor.get("leftShooter");
         rightShooter = hwMap.dcMotor.get("rightShooter");
         loadingMotor = hwMap.dcMotor.get("loadingMotor");
+        intakeMotor = hwMap.dcMotor.get("intakeMotor");
         shooterMotors = new DcMotor[] {leftShooter, rightShooter};
 
         leftShooter.setDirection(DcMotor.Direction.FORWARD);
         rightShooter.setDirection(DcMotor.Direction.REVERSE);
         loadingMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection((DcMotor.Direction.FORWARD));
 
         for (DcMotor motor : shooterMotors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        // loading motor initialization
-        loadingMotor.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+        // loading and intake motor initialization
+        loadingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // saying its name
@@ -68,6 +72,7 @@ public class FourWheelRobot {
 
     public void load(double speed) {
         loadingMotor.setPower(speed);
+        intakeMotor.setPower(speed);
     }
 
     public void goForward(int position) {

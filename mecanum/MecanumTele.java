@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp(name="MecanumTele", group="Mecanum")
@@ -11,6 +12,10 @@ public class MecanumTele extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap, telemetry);
+
+        for (DcMotor motor : robot.motors) {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
         double maxSpeed = 1.0;
         boolean isPressingX = false;
@@ -25,8 +30,8 @@ public class MecanumTele extends LinearOpMode {
 
             double frontLeftPower = y - x + r;
             double backLeftPower = y + x + r;
-            double frontRightPower = y - x - r;
-            double backRightPower = y + x - r;
+            double frontRightPower = y + x - r;
+            double backRightPower = y - x - r;
 
             double max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
             max = Math.max(Math.abs(frontRightPower), max);
@@ -62,6 +67,9 @@ public class MecanumTele extends LinearOpMode {
 
 
             robot.intake(gamepad1.right_trigger);
+            if (gamepad1.right_trigger == 0.0) {
+                robot.intake(-gamepad1.left_trigger);
+            }
 
 
 

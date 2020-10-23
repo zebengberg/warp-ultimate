@@ -44,6 +44,10 @@ public class FourWheelTele extends LinearOpMode {
             shoot();
             robot.load(-gamepad1.left_trigger);
 
+
+            // moving the arm
+            robot.moveArm(gamepad1.right_stick_y);
+
             maxSpeed = 0.6;
             frontLeftPower *= maxSpeed;
             backLeftPower *= maxSpeed;

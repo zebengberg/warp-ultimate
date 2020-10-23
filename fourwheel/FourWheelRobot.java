@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.fourwheel;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FourWheelRobot {
@@ -12,6 +14,8 @@ public class FourWheelRobot {
 
     public DcMotor leftShooter, rightShooter, loadingMotor, intakeMotor;
     public DcMotor[] shooterMotors;
+
+    public CRServo arm;
 
     HardwareMap hwMap;
     Telemetry tel;
@@ -59,6 +63,9 @@ public class FourWheelRobot {
         loadingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // initializing arm servo
+        arm = hwMap.crservo.get("arm");
+
 
         // saying its name
         tel.speak("IMPOSTER IS NOW SELF_AWARE");
@@ -82,6 +89,10 @@ public class FourWheelRobot {
         }
     }
 
+    public void moveArm(float power) {
+        arm.setPower(power);
+    }
+
     public void printStatus(Telemetry atel) {
         tel = atel;
         tel.addData("frontLeftMotor", frontLeftMotor.getPower());
@@ -91,6 +102,7 @@ public class FourWheelRobot {
         tel.addData("leftShooter", leftShooter.getPower());
         tel.addData("rightShooter", rightShooter.getPower());
         tel.addData("loadingMotor", loadingMotor.getPower());
+        tel.addData("arm", arm.getPower());
         tel.update();
     }
 }
